@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -16,8 +17,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
+import com.wallace.pickfilegallery.LogUtils.logD
 import com.wallace.pickfilegallery.databinding.ActivityMainBinding
 import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -117,7 +120,15 @@ class MainActivity : AppCompatActivity() {
                     val source = ImageDecoder.createSource(contentResolver, imageFile)
                     ImageDecoder.decodeBitmap(source)
                 }
-                binding.imvContent.setImageBitmap(Bitmap.createBitmap(imageBitmap))
+
+                val currentTimeMillis = System.currentTimeMillis()
+                val fileName = "correspondente_doc_foto_$currentTimeMillis"
+                val outStream = FileOutputStream(File(cacheDir, fileName))
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream)
+                outStream.close()
+
+                val bitmap = BitmapFactory.decodeFile(cacheDir.absolutePath.plus("/".plus(fileName)))
+                binding.imvContent.setImageBitmap(bitmap)
 
                 cursor.close()
             }

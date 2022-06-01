@@ -9,6 +9,7 @@ import android.util.Base64
 import androidx.activity.result.ActivityResultLauncher
 import com.wallace.pickfilegallery.LogUtils.logD
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 fun ActivityResultLauncher<Intent>.pickImageFromGallery(context: Context) {
     val builder = StrictMode.VmPolicy.Builder()
@@ -37,7 +38,6 @@ fun ActivityResultLauncher<Intent>.pickImageFromGallery(context: Context) {
     this.launch(Intent.createChooser(chooserIntent, "Selecione uma imagem"))
 }
 
-
 fun addIntentsToList(
     context: Context,
     list: MutableList<Intent?>,
@@ -52,11 +52,4 @@ fun addIntentsToList(
         logD("Intent: " + intent.action + " package: " + packageName)
     }
     return list
-}
-
-fun Bitmap.toBase64(): String {
-    val byteArrayOutPutStream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutPutStream)
-    val byteArray = byteArrayOutPutStream.toByteArray()
-    return Base64.encodeToString(byteArray, Base64.DEFAULT)
 }
