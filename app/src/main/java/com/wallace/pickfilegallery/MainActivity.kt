@@ -5,7 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast.LENGTH_LONG
@@ -106,8 +108,16 @@ class MainActivity : AppCompatActivity() {
                         picturePath
                     )
                 )
-                val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageFile)
-                binding.imvContent.setImageBitmap(imageBitmap)
+                val imageBitmap = if(Build.VERSION.SDK_INT < 28) {
+                    MediaStore.Images.Media.getBitmap(
+                        contentResolver,
+                        imageFile
+                    )
+                } else {
+                    val source = ImageDecoder.createSource(contentResolver, imageFile)
+                    ImageDecoder.decodeBitmap(source)
+                }
+                binding.imvContent.setImageBitmap(Bitmap.createBitmap(imageBitmap))
 
                 cursor.close()
             }

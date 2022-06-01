@@ -2,10 +2,13 @@ package com.wallace.pickfilegallery
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.StrictMode
 import android.provider.MediaStore
+import android.util.Base64
 import androidx.activity.result.ActivityResultLauncher
 import com.wallace.pickfilegallery.LogUtils.logD
+import java.io.ByteArrayOutputStream
 
 fun ActivityResultLauncher<Intent>.pickImageFromGallery(context: Context) {
     val builder = StrictMode.VmPolicy.Builder()
@@ -49,4 +52,11 @@ fun addIntentsToList(
         logD("Intent: " + intent.action + " package: " + packageName)
     }
     return list
+}
+
+fun Bitmap.toBase64(): String {
+    val byteArrayOutPutStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutPutStream)
+    val byteArray = byteArrayOutPutStream.toByteArray()
+    return Base64.encodeToString(byteArray, Base64.DEFAULT)
 }
